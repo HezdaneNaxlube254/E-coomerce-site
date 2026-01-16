@@ -2,13 +2,14 @@ services:
   - type: web
     name: ecommerce-django
     env: python
+    region: ohio  # You can change to: oregon, frankfurt, singapore
+    plan: free
+    branch: main
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
-    startCommand: |
-      python manage.py migrate --noinput
-      gunicorn ecommerce.wsgi:application
+    startCommand: gunicorn ecommerce.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -17,17 +18,16 @@ services:
       - key: DJANGO_DEBUG
         value: false
       - key: ALLOWED_HOSTS
-        value: ".onrender.com"
-    disk:
-      name: media
-      mountPath: /opt/render/project/src/media
-      sizeGB: 1
+        value: .onrender.com,localhost,127.0.0.1
+      - key: DISABLE_COLLECTSTATIC
+        value: 0
+    healthCheckPath: /
     autoDeploy: true
-    healthCheckPath: /health/
 
 databases:
-  - name: ecommerce-db
+  - name: ecommerce-postgres
     databaseName: ecommerce_db
     user: ecommerce_user
+    region: ohio
     plan: free
     ipAllowList: []
