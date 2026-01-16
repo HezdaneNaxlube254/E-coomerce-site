@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: ecommerce-django
+    env: python
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: |
+      python manage.py migrate --noinput
+      gunicorn ecommerce.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+    disk:
+      name: media
+      mountPath: /opt/render/project/src/media
+      sizeGB: 1
+    autoDeploy: true
+    healthCheckPath: /health/
+
+databases:
+  - name: ecommerce-db
+    databaseName: ecommerce_db
+    user: ecommerce_user
+    plan: free
+    ipAllowList: []
