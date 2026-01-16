@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Product{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            {% include "sidebar.html" %}
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">Delete Product</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5><i class="bi bi-exclamation-triangle"></i> Warning: This action cannot be undone!</h5>
+                        <p class="mb-0">
+                            You are about to delete the product: <strong>{{ product.name }}</strong> (SKU: {{ product.sku }})
+                        </p>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6>Product Details:</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>SKU:</th>
+                                    <td>{{ product.sku }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Name:</th>
+                                    <td>{{ product.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Category:</th>
+                                    <td>{{ product.category.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Price:</th>
+                                    <td>${{ product.price }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Stock:</th>
+                                    <td>{{ product.quantity }} units</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Reason for Deletion</label>
+                            <textarea name="reason" id="reason" class="form-control" rows="3" 
+                                      placeholder="Optional: Enter reason for deleting this product..."></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'products:detail' product.pk %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete Product Permanently
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

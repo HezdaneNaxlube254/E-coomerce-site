@@ -1,0 +1,74 @@
+<div class="sidebar">
+    <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <div class="px-3">
+                    <small class="text-uppercase text-muted">Main</small>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.app_name == 'products' and request.resolver_match.url_name == 'list' %}active{% endif %}" 
+                   href="{% url 'products:list' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.app_name == 'products' and request.resolver_match.url_name != 'list' %}active{% endif %}" 
+                   href="{% url 'products:list' %}">
+                    <i class="bi bi-box"></i> Products
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.app_name == 'orders' %}active{% endif %}" 
+                   href="{% url 'orders:list' %}">
+                    <i class="bi bi-cart"></i> Orders
+                </a>
+            </li>
+            
+            <li class="nav-item mt-4 mb-2">
+                <div class="px-3">
+                    <small class="text-uppercase text-muted">Management</small>
+                </div>
+            </li>
+            {% if request.user.is_admin or request.user.is_staff_member %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'products:category_list' %}">
+                    <i class="bi bi-tags"></i> Categories
+                </a>
+            </li>
+            {% endif %}
+            {% if request.user.is_admin %}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/" target="_blank">
+                    <i class="bi bi-gear"></i> Admin Panel
+                </a>
+            </li>
+            {% endif %}
+            
+            <li class="nav-item mt-4 mb-2">
+                <div class="px-3">
+                    <small class="text-uppercase text-muted">System</small>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'health' %}">
+                    <i class="bi bi-heart-pulse"></i> Health Check
+                </a>
+            </li>
+        </ul>
+        
+        <div class="px-3 mt-5">
+            <div class="card bg-light border-0">
+                <div class="card-body p-3">
+                    <small class="text-muted d-block mb-2">System Status</small>
+                    <div class="d-flex align-items-center">
+                        <div class="me-2">
+                            <div class="rounded-circle bg-success" style="width: 10px; height: 10px;"></div>
+                        </div>
+                        <small>All Systems Operational</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

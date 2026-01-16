@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            {% include "sidebar.html" %}
+        </div>
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2>Order {{ order.order_number }}</h2>
+                    <p class="text-muted mb-0">
+                        Created on {{ order.created_at|date:"F d, Y" }} by {{ order.created_by.email }}
+                    </p>
+                </div>
+                <div>
+                    <a href="{% url 'orders:list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Orders
+                    </a>
+                    {% if order.can_be_modified %}
+                    <a href="{% url 'orders:edit' order.pk %}" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Edit Order
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Order Info -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Order Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>Order Number:</th>
+                                                <td>{{ order.order_number }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status:</th>
+                                                <td>
+                                                    {% if order.status == 'draft' %}
+                                                    <span class="badge bg-secondary">Draft</span>
+                                                    {% elif order.status == 'pending' %}
+                                                    <span class="badge bg-warning">Pending</span>
+                                                    {% elif order.status == 'processing' %}
+                                                    <span class="badge bg-info">Processing</span>
+                                                    {% elif order.status == 'shipped' %}
+                                                    <span class="badge bg-primary">Shipped</span>
+                                                    {% elif order.status == 'delivered' %}
+                                                    <span class="badge bg-success">Delivered</span>
+                                                    {% elif order.status == 'cancelled' %}
+                                                    <span class="badge bg-danger">Cancelled</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Created:</th>
+                                                <td>{{ order.created_at|date:"F d, Y H:i" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Last Updated:</th>
+                                                <td>{{ order.updated_at|date:"F d, Y H:i" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>Customer Name:</th>
+                                                <td>{{ order.customer_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email:</th>
+                                                <td>{{ order.customer_email }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Phone:</th>
+                                                <td>{{ order.customer_phone|default:"Not provided" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            {% if order.notes %}
+                            <div class="mt-3">
+                                <h6>Order Notes</h6>
+                                <p class="text-muted">{{ order.notes|linebreaks }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <!-- Order Summary -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Order Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal:</td>
+                                        <td class="text-end">${{ order.total_amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tax:</td>
+                                        <td class="text-end">${{ order.tax_amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discount:</td>
+                                        <td class="text-end">-${{ order.discount_amount }}</td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td><strong>Total:</strong></td>
+                                        <td class="text-end"><strong>${{ order.final_amount }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
